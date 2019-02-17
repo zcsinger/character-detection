@@ -85,11 +85,10 @@ for epoch in range(NUM_EPOCHS):
 
     for i, valid_batch in enumerate(testing_loader, 0):
         valid_frames, valid_char, valid_stage = valid_batch
-        
-        # get true results
         valid_char1 = valid_char[:, 0]
         valid_char2 = valid_char[:, 1]
 
+        # get true results
         true_char1_names = utils.char_to_names(valid_char1)
         true_char2_names = utils.char_to_names(valid_char2)
         true_stage_names = utils.stage_to_names(valid_stage)

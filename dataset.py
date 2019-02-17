@@ -34,7 +34,7 @@ class TwitchClipDataset(Dataset):
 
     def __getitem__(self, idx):
         frame_name = os.path.join(self.clip_dir, 
-                                  self.clips_frames.iloc[idx, 0])
+                               self.clips_frames.iloc[idx, 0])
         frame = Image.open(frame_name)
         if self.transforms:
             frame = self.transforms(frame)
@@ -47,17 +47,17 @@ class TwitchClipDataset(Dataset):
         """
         Args:
             csv_file (string): Path to csv file containing info about clips. Assumed column structure:
-            Name    FrameMax   FrameDelay Character1  Character2  Stage
+            Path    FrameMax   FrameDelay Character1  Character2  Stage
         Returns:
             clips_frames (DataFrame): DataFrame with expanded info. Assumed column structure:
-            Name    Character1  Character2  Stage
+            Path    Character1  Character2  Stage
         """
         info_frame = pd.read_csv(csv_file, sep="\t")
         clips_list = []
 
         for i in range(len(info_frame)):
             row = info_frame.iloc[i]
-            clip = pd.DataFrame(columns=['Name', 'Character1', 'Character2', 'Stage'])
+            clip = pd.DataFrame(columns=['Path', 'Character1', 'Character2', 'Stage'])
             # Map characters and stage to proper index for training
             char1 = row['Character1']
             char2 = row['Character2']
@@ -70,7 +70,7 @@ class TwitchClipDataset(Dataset):
             frame_delay = row['FrameDelay']
             for frame in range(0, frame_max + frame_delay, frame_delay):
                 new_row = row.drop(['FrameMax', 'FrameDelay'])
-                new_row['Name'] = row['Name'] + "_frame{}.jpg".format(frame)
+                new_row['Path'] = row['Path'] + "_frame{}.jpg".format(frame)
                 new_row['Character1'] = new_char1
                 new_row['Character2'] = new_char2
                 new_row['Stage'] = new_stage

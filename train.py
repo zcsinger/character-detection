@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from dataset import TwitchClipDataset
 from net import CharacterStageNet
 
-from utils import char_to_names, stage_to_names
+import utils
 
 """============================ GLOBAL VARIABLES ==============================="""
 
@@ -36,7 +36,7 @@ data_transforms = transforms.Compose([
 """============================ TRAINING DATA ==============================="""
 
 print("Creating training set...")
-training_set = TwitchClipDataset(csv_file='clips/train_csv.csv',
+training_set = TwitchClipDataset(csv_file='clips/data/train_data.csv',
                                  clip_dir='clips/',
                                  transforms=data_transforms)
 
@@ -44,7 +44,7 @@ training_loader = DataLoader(training_set, batch_size=BATCH_SIZE,
                              shuffle=True, num_workers=0)
 
 print("Creating testing set...")
-testing_set = TwitchClipDataset(csv_file='clips/test_csv.csv',
+testing_set = TwitchClipDataset(csv_file='clips/data/test_data.csv',
                                  clip_dir='clips/',
                                  transforms=data_transforms)
 
@@ -85,16 +85,30 @@ for epoch in range(NUM_EPOCHS):
 
     for i, valid_batch in enumerate(testing_loader, 0):
         valid_frames, valid_char, valid_stage = valid_batch
+        
+        # get true results
         valid_char1 = valid_char[:, 0]
         valid_char2 = valid_char[:, 1]
 
-        valid_outputs_char1, valid_outputs_char2, valid_outputs_stage = model(valid_frames)
-        char1_names = char_to_names(valid_outputs_char1)
-        char2_names = char_to_names(valid_outputs_char2)
-        stage_names = stage_to_names(valid_outputs_stage)
+        true_char1_names = utils.char_to_names(valid_char1)
+        true_char2_names = utils.char_to_names(valid_char2)
+        true_stage_names = utils.stage_to_names(valid_stage)
+        true_results = list(zip(true_char1_names, true_char2_names, true_stage_names))
 
-        results = list(zip(char1_names, char2_names, stage_names))
-        print(results)
+        # get validation results from model
+        valid_outputs_char1, valid_outputs_char2, valid_outputs_stage = model(valid_frames)
+        char1_names = utils.char_to_names_tensor(valid_outputs_char1)
+        char2_names = utils.char_to_names_tensor(valid_outputs_char2)
+        stage_names = utils.stage_to_names_tensor(valid_outputs_stage)
+        pred_results = list(zip(char1_names, char2_names, stage_names))
+
+        # print random output and compare predicted and true
+        print("Validation batch {}:".format(i))
+        print("Pred output:")
+        random_idx = random.randint(0, len(pred_results)-1)
+        print(pred_results[random_idx])
+        print("True output:")
+        print(true_results[random_idx])
         
         """
         valid_loss = criterion(valid_outputs_char1, valid_char1) + \

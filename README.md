@@ -10,9 +10,11 @@ Due to the prevalence of streaming, several Twitch clips from prominent channels
 
 ## Usage
 
-Example clips have been placed in the clips directory. To generate clips one can use clips/clips.py and specify the frame delay and resolution scaling. 
+Example clips have been placed in the clips directory. To generate clips one can use `clips/clips.py` and specify the frame delay and resolution scaling. 
 
-Training and testing sets can then be specified in clips/train_csv.csv and clips/test_csv.csv. 
+It is suggested to create a `data` subdirectory in `clips` to store the clips as they can take up a lot of space visually.
+
+Training and testing sets can then be specified in CSV files in locations such as `clips/data/train_data.csv` and `clips/data/test_data.csv`. 
 
 ## Training
 

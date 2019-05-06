@@ -16,6 +16,10 @@ It is suggested to create a `data` subdirectory in `clips` to store the clips as
 
 Training and testing sets can then be specified in CSV files in locations such as `clips/data/train_data.csv` and `clips/data/test_data.csv`. 
 
+An example image before cropping and downsampling:
+
+![example data](https://raw.githubusercontent.com/zcsinger/character-detection/master/clips/example_data/lucina_palutena_kl_1_frame0.jpg)
+
 ## Training
 
 With the usage format as detailed above, one can train with 
